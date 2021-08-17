@@ -15,7 +15,7 @@ void printchain(node *pointer){
     }
     cout<<"\n";
 }
-
+        
 void freechain(node *pointer){
     if (pointer==NULL) return;
     freechain(pointer->rp);
@@ -91,7 +91,6 @@ int main(){
     node b4;
     node *newchain;
     node *head=&b1;
-
 
     b1.lp=NULL;
     b1.c='S';
