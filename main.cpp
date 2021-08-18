@@ -8,7 +8,6 @@ typedef struct node {
         struct node *rp=NULL;
 } node;
 
-
 void printchain(node *pointer){ 
     if (!pointer) {
         cout<<"\n";
@@ -19,7 +18,7 @@ void printchain(node *pointer){
 }
         
 void freechain(node *pointer){
-    if (pointer==NULL) return;
+    if (!pointer) return;
     freechain(pointer->rp);
     free(pointer);
 }
@@ -45,10 +44,10 @@ node* copychain(node *pointer){
     return newchain;
 }
 
-void insertchain(node **head,node *ins,node *des,bool leftright){
-    if(ins==des) return;
-    if((des->lp==ins)&&!leftright)return;
-    if((des->rp==ins)&&leftright)return;
+int insertchain(node **head,node *ins,node *des,bool leftright){
+    if(ins==des) return 0;
+    if((des->lp==ins)&&!leftright)return 0;
+    if((des->rp==ins)&&leftright)return 0;
     
     //insert to the left
     if(!leftright){
@@ -83,15 +82,14 @@ void insertchain(node **head,node *ins,node *des,bool leftright){
         ins->lp=des;
         des->rp=ins;
     }
+    return 1;
 }
-
-
 
 node* assignchain(){
     string s;
     cout <<"Input nodes:";
     cin >>s;
-    const char *ch=s.c_str();
+    const char* ch=s.c_str();
     node *p=NULL;
     node *newchain=NULL;
     while (*ch!='\0'){
@@ -110,16 +108,21 @@ node* assignchain(){
     return newchain;
 }
 
+int nodepos(node* point){
+    int pos;
+    if (!point) return 0;
+    pos=nodepos(point->lp)+1;
+    return pos;
+}
+
 int main(){
-
-
+    
     node *newchain;
     node *head=NULL;
 
     newchain=assignchain();
     head=newchain;
     printchain(head); 
-
-
+    cout<<nodepos(head->rp->rp->lp);
 
 }
