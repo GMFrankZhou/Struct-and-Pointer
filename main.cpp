@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 using namespace std;
 
 typedef struct node {
@@ -7,13 +8,14 @@ typedef struct node {
         struct node *rp=NULL;
 } node;
 
+
 void printchain(node *pointer){ 
-    node *p=pointer;
-    while (p!=NULL){
-        cout <<p->c<<"\t";
-        p=p->rp;
+    if (!pointer) {
+        cout<<"\n";
+        return;
     }
-    cout<<"\n";
+    cout <<pointer->c<<"\t";
+    printchain(pointer->rp);
 }
         
 void freechain(node *pointer){
@@ -45,20 +47,20 @@ node* copychain(node *pointer){
 
 void insertchain(node **head,node *ins,node *des,bool leftright){
     if(ins==des) return;
-    if((des->lp==ins)&&(leftright==false))return;
-    if((des->rp==ins)&&(leftright==true))return;
+    if((des->lp==ins)&&!leftright)return;
+    if((des->rp==ins)&&leftright)return;
     
     //insert to the left
-    if(leftright==false){
-        if (ins->lp!=NULL) 
+    if(!leftright){
+        if (ins->lp) 
             ins->lp->rp=ins->rp; 
         else 
             *head=ins->rp;
 
-        if (ins->rp!=NULL) 
+        if (ins->rp) 
             ins->rp->lp=ins->lp;
 
-        if (des->lp!=NULL) 
+        if (des->lp) 
             des->lp->rp=ins;
         else
             *head=ins;
@@ -68,52 +70,56 @@ void insertchain(node **head,node *ins,node *des,bool leftright){
     }
     //insert to the right
     if(leftright==true){
-        if (ins->lp!=NULL) 
+        if (ins->lp) 
             ins->lp->rp=ins->rp; 
         else 
             *head=ins->rp;
 
-        if (ins->rp!=NULL) 
+        if (ins->rp) 
             ins->rp->lp=ins->lp;
 
-        if (des->rp!=NULL) des->rp->lp=ins;
+        if (des->rp) des->rp->lp=ins;
         ins->rp=des->rp;
         ins->lp=des;
         des->rp=ins;
     }
 }
 
+
+
+node* assignchain(){
+    string s;
+    cout <<"Input nodes:";
+    cin >>s;
+    const char *ch=s.c_str();
+    node *p=NULL;
+    node *newchain=NULL;
+    while (*ch!='\0'){
+        node *newnode=(node*)malloc(sizeof(node));
+        newnode->c=*ch;
+        if (!newchain){
+            newchain=newnode;
+            p=newchain;
+        } else {
+            p->rp=newnode;
+            newnode->lp=p;
+            p=newnode;
+        }
+        ch++;
+    }
+    return newchain;
+}
+
 int main(){
 
-    node b1;
-    node b2;
-    node b3;
-    node b4;
+
     node *newchain;
-    node *head=&b1;
+    node *head=NULL;
 
-    b1.lp=NULL;
-    b1.c='S';
-    b1.rp=&b2;
+    newchain=assignchain();
+    head=newchain;
+    printchain(head); 
 
-    b2.lp=&b1;
-    b2.c='M';
-    b2.rp=&b3;
 
-    b3.lp=&b2;
-    b3.c='L';
-    b3.rp=&b4;
 
-    b4.lp=&b3;
-    b4.c='X';
-    b4.rp=NULL;
-
-    printchain(&b1); 
-    insertchain(&head,&b1,&b4,true);
-    printchain(head);
-
-    newchain=copychain(head);
-    printchain(newchain);
-    freechain(newchain);
-    printchain(newchain);
 }
